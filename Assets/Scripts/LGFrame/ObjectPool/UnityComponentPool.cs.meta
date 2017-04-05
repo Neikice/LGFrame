@@ -1,12 +1,7 @@
 fileFormatVersion: 2
-guid: f7f8122fb13d0924299c18dd794d211e
-labels:
-- Spawn
-- Manager
-- Preload
-- Pool
-- Instance
-- Performance
+guid: 436b22f4fc65f7044ac8bf7b8b4dd952
+timeCreated: 1490693516
+licenseType: Pro
 MonoImporter:
   serializedVersion: 2
   defaultReferences: []
