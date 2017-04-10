@@ -21,13 +21,13 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
             instance.gameObject.SetActive(false);
         }
 
-        public UnityComponentPool(T prefab, Transform hierarchyParent) : base()
+        public UnityComponentPool(string name,T prefab, Transform hierarchyParent) : base(name)
         {
             this.prefab = prefab;
             this.hierachgParent = hierarchyParent;
         }
 
-        public UnityComponentPool(T prefab, Transform hierarchyParent, int maxCount) : base()
+        public UnityComponentPool(string name, T prefab, Transform hierarchyParent, int maxCount) : base(name)
         {
             this.prefab = prefab;
             this.hierachgParent = hierarchyParent;

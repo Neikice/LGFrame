@@ -5,12 +5,12 @@ public class LogOnePool : UnityComponentPool<LogOne>{
     protected Transform deactiveParent;
     public Transform DeactiveParent { get { return this.deactiveParent; } }
 
-    public LogOnePool(LogOne prefab, Transform hierarchyParent , Transform deactiveParent) : base(prefab, hierarchyParent)
+    public LogOnePool(string poolname,LogOne prefab, Transform hierarchyParent , Transform deactiveParent) : base(poolname, prefab, hierarchyParent)
     {
         this.deactiveParent = deactiveParent;
     }
 
-    public LogOnePool(LogOne prefab, Transform hierarchyParent, Transform deactiveParent,int maxCount) : base(prefab, hierarchyParent, maxCount)
+    public LogOnePool(string poolname,LogOne prefab, Transform hierarchyParent, Transform deactiveParent,int maxCount) : base(poolname, prefab, hierarchyParent, maxCount)
     {
         this.deactiveParent = deactiveParent;
     }

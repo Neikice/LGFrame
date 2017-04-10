@@ -1,5 +1,19 @@
 ﻿using System;
-using System.Collections;using System.Collections.Generic;using UnityEngine;using UniRx;namespace LGFrame.Toolkit{    public abstract class ObjectPool<T>    {        T prefab;        Queue<T> inactiveQueue;        Queue<T> deactiveQueue;        protected int maxPoolCount;        public virtual int MaxPoolCount { get { return maxPoolCount; } }
+using System.Collections;using System.Collections.Generic;using UnityEngine;using UniRx;namespace LGFrame.Toolkit{    public abstract class ObjectPool
+    {
+        public readonly string name;
+
+        public ObjectPool(string name)
+        {
+            this.name = name;
+            this.AddDictionary();
+        }
+
+        void AddDictionary()
+        {
+            PoolDictionary.Pool.Add(this.name, this);
+        }
+    }    public abstract class ObjectPool<T> : ObjectPool    {        T prefab;        Queue<T> inactiveQueue;        Queue<T> deactiveQueue;        protected int maxPoolCount;        public virtual int MaxPoolCount { get { return maxPoolCount; } }
 
         /// <summary>
         /// Current pooled object count.
@@ -25,14 +39,14 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
             }
         }
 
-        public ObjectPool()
+        public ObjectPool(string name):base(name)
         {
             this.inactiveQueue = new Queue<T>();
             this.deactiveQueue = new Queue<T>();
             this.maxPoolCount = int.MaxValue;
         }
 
-        public ObjectPool(T prefab,int maxPoolCount = int.MaxValue):this()
+        public ObjectPool(string name, T prefab, int maxPoolCount = int.MaxValue) : this(name)
         {
             this.prefab = prefab;
             this.maxPoolCount = maxPoolCount;
@@ -42,7 +56,7 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
         /// <summary>
         /// Create instance when needed.
         /// </summary>
-        /// <returns></returns>        protected abstract T CreateInstance();        
+        /// <returns></returns>        protected abstract T CreateInstance();
 
         public T Spawn()
         {
@@ -79,7 +93,8 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
 
             this.AfterDespawn(instance);
             this.deactiveQueue.Enqueue(instance);
-        }        protected abstract void AfterSpawn(T instance);        protected abstract void AfterDespawn(T instance);        /// <summary>
+        }        protected abstract void AfterSpawn(T instance);        protected abstract void AfterDespawn(T instance);
+        /// <summary>
         /// Move inactiveQueue Objects to deactiveQueue;
         /// </summary>        public void Clear()
         {

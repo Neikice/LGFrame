@@ -1,0 +1,1 @@
+﻿using System.Collections;using System.Collections.Generic;namespace LGFrame.Toolkit{    public static class PoolDictionary    {        public static readonly Dictionary<string, ObjectPool> Pool = new Dictionary<string, ObjectPool>();    }}

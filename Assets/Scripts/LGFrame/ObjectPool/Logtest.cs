@@ -27,7 +27,7 @@ public class Logtest : MonoBehaviour
 
     void Awake()
     {
-        pool = new LogOnePool(this.Prefab, this.prefabParent, this.prefabDeactiveParent,this.count);
+        pool = new LogOnePool("logtest" ,this.Prefab, this.prefabParent, this.prefabDeactiveParent,this.count);
         pool.PreloadAsync(this.count);
     }
     // Use this for initialization
