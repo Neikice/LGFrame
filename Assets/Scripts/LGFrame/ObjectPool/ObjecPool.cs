@@ -13,7 +13,8 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
         {
             PoolDictionary.Pool.Add(this.name, this);
         }
-    }    public abstract class ObjectPool<T> : ObjectPool    {        T prefab;        Queue<T> inactiveQueue;        Queue<T> deactiveQueue;        protected int maxPoolCount;        public virtual int MaxPoolCount { get { return maxPoolCount; } }
+    }    public abstract class ObjectPool<T> : ObjectPool    {        protected T prefab;
+        protected Queue<T> inactiveQueue;        protected Queue<T> deactiveQueue;        protected int maxPoolCount;        public virtual int MaxPoolCount { get { return maxPoolCount; } }
 
         /// <summary>
         /// Current pooled object count.
@@ -39,7 +40,7 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
             }
         }
 
-        public ObjectPool(string name):base(name)
+        public ObjectPool(string name) : base(name)
         {
             this.inactiveQueue = new Queue<T>();
             this.deactiveQueue = new Queue<T>();
@@ -104,9 +105,33 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
                 this.Despawn(instance);
             }
         }
+        public void PreLoad(int preLoadCount)
+        {
+            MainThreadDispatcher.StartUpdateMicroCoroutine(this.intialPreLoad(preLoadCount));
+        }
+
+        IEnumerator intialPreLoad(int preLoadCount)
+        {
+            while (this.InstancesCount < preLoadCount)
+            {
+                var requireCount = preLoadCount - this.InstancesCount;
+                if (requireCount <= 0) break;
+
+                var createCount = Math.Min(requireCount, this.MaxPoolCount);
+
+                for (int i = 0; i < createCount; i++)
+                {
+                    var instance = this.Spawn();
+                }
+                yield return null;
+            }
+        }
+
+
         public IObservable<Unit> PreloadAsync(int preLoadCount)
         {
             return Observable.FromMicroCoroutine<Unit>((observer, cancel) => this.PreloadCore(preLoadCount, this.MaxPoolCount, observer, cancel));
+            //return Observable.FromMicroCoroutine()
         }
 
         IEnumerator PreloadCore(int preloadCount, int threshold, IObserver<Unit> observer, CancellationToken cancellationToken)
