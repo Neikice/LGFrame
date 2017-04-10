@@ -1,5 +1,4 @@
-﻿using PathologicalGames;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -75,11 +74,11 @@ public class UIHPBarFollow : MonoBehaviour
         switch (this.Type)
         {
             case type.friend:
-                this.recTransform = PoolManager.Pools[pool].Spawn(friend) as RectTransform;
+               // this.recTransform = PoolManager.Pools[pool].Spawn(friend) as RectTransform;
                 break;
 
             case type.enemy:
-                this.recTransform = PoolManager.Pools[pool].Spawn(enemy) as RectTransform;
+               // this.recTransform = PoolManager.Pools[pool].Spawn(enemy) as RectTransform;
                 break;
         }
 

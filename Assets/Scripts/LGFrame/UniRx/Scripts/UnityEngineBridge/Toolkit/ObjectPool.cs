@@ -19,7 +19,7 @@ namespace UniRx.Toolkit
         /// <summary>
         /// Limit of instace count.
         /// </summary>
-        protected int MaxPoolCount
+        protected virtual int MaxPoolCount
         {
             get
             {

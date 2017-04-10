@@ -35,7 +35,8 @@ namespace LGFrame.BehaviorTree
             //condition.AddChild(priotick);
             //    priotick.AddChild(action3);
             leaf.AddChild(decorate_Timer);
-                condition2.AddChild(action2);   
+                condition2.AddChild(action2);
+
         }
     }
 }
