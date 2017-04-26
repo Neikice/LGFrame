@@ -20,6 +20,8 @@ namespace LGFrame.BehaviorTree.Decorate
             set { this.node.ParentNode = value; }
         }
 
+        public List<TickNode> ChildrenNotes { get { return this.node.ChildrenNotes; } }
+
         public BTDecorator(BTNode node)
         {
             this.name = "DefaultDecorator";

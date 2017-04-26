@@ -146,6 +146,7 @@ namespace LGFrame
         {
             CurrenState.OnTriggerExit(other);
         }
+
         public void RevettoPreviousState()
         {
             ChangeState(previousState);

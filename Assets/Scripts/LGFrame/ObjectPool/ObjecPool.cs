@@ -1,5 +1,12 @@
 ﻿using System;
-using System.Collections;using System.Collections.Generic;using UnityEngine;using UniRx;namespace LGFrame.Toolkit{    public abstract class ObjectPool
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UniRx;
+
+namespace LGFrame.Toolkit
+{
+    public abstract class ObjectPool
     {
         public readonly string name;
 
@@ -13,9 +20,17 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
         {
             PoolDictionary.Pool.Add(this.name, this);
         }
-    }    public abstract class ObjectPool<T> : ObjectPool    {        protected T prefab;
-        protected Queue<T> inactiveQueue;        protected Queue<T> deactiveQueue;        protected int maxPoolCount;        public virtual int MaxPoolCount { get { return maxPoolCount; } }
 
+    }
+
+    public abstract class ObjectPool<T> : ObjectPool
+    {
+        protected readonly T prefab;
+        protected readonly List<T> inactiveQueue;
+        protected readonly Queue<T> deactiveQueue;
+        protected readonly int maxPoolCount;
+
+        public int MaxPoolCount { get { return this.maxPoolCount; } }
         /// <summary>
         /// Current pooled object count.
         /// </summary>
@@ -25,6 +40,15 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
             {
                 if (this.inactiveQueue == null) return 0;
                 return this.inactiveQueue.Count;
+            }
+        }
+
+        public int DeactiveQueue
+        {
+            get
+            {
+                if (this.deactiveQueue == null) return 0;
+                return this.deactiveQueue.Count;
             }
         }
         /// <summary>
@@ -40,15 +64,12 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
             }
         }
 
-        public ObjectPool(string name) : base(name)
-        {
-            this.inactiveQueue = new Queue<T>();
-            this.deactiveQueue = new Queue<T>();
-            this.maxPoolCount = int.MaxValue;
-        }
 
-        public ObjectPool(string name, T prefab, int maxPoolCount = int.MaxValue) : this(name)
+
+        public ObjectPool(string name, T prefab, int maxPoolCount = int.MaxValue) : base(name)
         {
+            this.inactiveQueue = new List<T>();
+            this.deactiveQueue = new Queue<T>();
             this.prefab = prefab;
             this.maxPoolCount = maxPoolCount;
         }
@@ -57,8 +78,29 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
         /// <summary>
         /// Create instance when needed.
         /// </summary>
-        /// <returns></returns>        protected abstract T CreateInstance();
+        /// <returns></returns>
+        protected abstract T CreateInstance();
 
+        public T Create()
+        {
+            T instance = this.CreateInstance();
+            this.SpawnAction(instance);
+            Observable.IntervalFrame(3).Take(1).Subscribe(_ => this.Despawn(instance));
+            return instance;
+        }
+
+        protected void SpawnAction(T instance)
+        {
+            this.AfterSpawn(instance);
+            this.inactiveQueue.Add(instance);
+        }
+        
+        protected void DespawnAction(T instance)
+        {
+            this.AfterDespawn(instance);
+            this.Remove(instance);
+            this.deactiveQueue.Enqueue(instance);
+        }
         public T Spawn()
         {
 
@@ -69,9 +111,9 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
             {
                 if (this.InstancesCount >= this.MaxPoolCount)
                 {
-                    instance = this.inactiveQueue.Peek();
+                    instance = this.inactiveQueue[0];
                     this.Despawn(instance);
-                    this.inactiveQueue.Dequeue();
+                    this.inactiveQueue.Remove(instance);
                     instance = this.deactiveQueue.Dequeue();
                 }
                 else
@@ -80,31 +122,45 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
                 }
             }
 
-            this.AfterSpawn(instance);
-            this.inactiveQueue.Enqueue(instance);
+            this.SpawnAction(instance);
             return instance;
-        }        public void Despawn(T instance)
+        }
+
+        public void Despawn(T instance)
         {
             if (instance == null) throw new ArgumentNullException("instance");
 
-            if ((this.inactiveQueue.Count + 1) == this.MaxPoolCount)
-            {
-                throw new InvalidOperationException("Reached Max PoolSize");
-            }
+            //if ((this.inactiveQueue.Count + 1) == this.MaxPoolCount)
+            //{
+            //    throw new InvalidOperationException("Reached Max PoolSize");
+            //}
+            
+            this.DespawnAction(instance);
+        }
 
-            this.AfterDespawn(instance);
-            this.deactiveQueue.Enqueue(instance);
-        }        protected abstract void AfterSpawn(T instance);        protected abstract void AfterDespawn(T instance);
+        public void Remove(T instance)
+        {
+            if (instance == null) throw new ArgumentNullException("instance");
+
+            if (this.inactiveQueue.Contains(instance))
+                this.inactiveQueue.Remove(instance);
+        }
+
+        protected abstract void AfterSpawn(T instance);
+
+        protected abstract void AfterDespawn(T instance);
         /// <summary>
         /// Move inactiveQueue Objects to deactiveQueue;
-        /// </summary>        public void Clear()
+        /// </summary>
+        public void Clear()
         {
             while (this.inactiveQueue.Count != 0)
             {
-                var instance = this.inactiveQueue.Peek();
+                var instance = this.inactiveQueue[0];
                 this.Despawn(instance);
             }
-        }
+        }
+
         public void PreLoad(int preLoadCount)
         {
             MainThreadDispatcher.StartUpdateMicroCoroutine(this.intialPreLoad(preLoadCount));
@@ -117,14 +173,18 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
                 var requireCount = preLoadCount - this.InstancesCount;
                 if (requireCount <= 0) break;
 
-                var createCount = Math.Min(requireCount, this.MaxPoolCount);
+                var createCount = this.MaxPoolCount != 0 ? Math.Min(requireCount, this.MaxPoolCount) : requireCount;
 
                 for (int i = 0; i < createCount; i++)
                 {
-                    var instance = this.Spawn();
+                    var instance = this.Create();
+                                      
                 }
+
                 yield return null;
             }
+
+           
         }
 
 
@@ -161,4 +221,6 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
             observer.OnNext(Unit.Default);
             observer.OnCompleted();
         }
-    }}
+
+    }
+}

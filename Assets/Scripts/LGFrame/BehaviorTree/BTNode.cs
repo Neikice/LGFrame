@@ -12,16 +12,19 @@ namespace LGFrame.BehaviorTree
 
         public TickNode ParentNode { get; set; }
 
-        public virtual TickNode RootNode{
+        public virtual TickNode RootNode
+        {
             get
             {
-                if(this.ParentNode == null) return this;
+                if (this.ParentNode == null) return this;
 
                 return this.ParentNode.ParentNode;
             }
         }
 
-        public List<TickNode> ChildrenNotes;
+        public List<TickNode> childrenNotes;
+
+        public List<TickNode> ChildrenNotes { get { return this.childrenNotes; } }
 
         protected BTResult state;
 
@@ -32,7 +35,7 @@ namespace LGFrame.BehaviorTree
         {
             this.name = "Root";
             this.State = BTResult.Ready;
-            this.ChildrenNotes = new List<TickNode>();
+            this.childrenNotes = new List<TickNode>();
         }
 
         public BTNode(BTNode parrent) : base()
@@ -84,7 +87,7 @@ namespace LGFrame.BehaviorTree
                 str.Append("-");
             }
 
-            str.AppendFormat("{0}【{1}】{2}", name,this.State.ToString(), "\n");
+            str.AppendFormat("{0}【{1}】{2}", name, this.State.ToString(), "\n");
 
             if (this.ChildrenNotes != null)
             {

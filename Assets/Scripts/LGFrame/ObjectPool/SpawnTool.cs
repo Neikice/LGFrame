@@ -5,8 +5,6 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
         [SerializeField]
         List<poolSetting> Pool;
 
-        public Transform Tfff;
-
         [Serializable]
         struct poolSetting
         {
@@ -23,11 +21,10 @@ using System.Collections;using System.Collections.Generic;using UnityEngine;u
             for (int i = 0; i < Pool.Count; i++)
             {
                 var temp = this.Pool[i];
-                var pool = new GameObjectPool(temp.poolName, temp.prefab.gameObject, temp.parent, temp.maxCount);
-                Debug.LogFormat("poolName = {0}, maxCount = {1}, preLoadCount = {2}", temp.poolName, temp.maxCount, temp.preLoadCount);
+                var pool = new UnityComponentPool<Transform>(temp.poolName, temp.prefab, temp.parent, temp.maxCount);
+                //Debug.LogFormat("poolName = {0}, maxCount = {1}, preLoadCount = {2}", temp.poolName, temp.maxCount, temp.preLoadCount);
                 //pool.PreloadAsync(temp.preLoadCount);
                 pool.PreLoad(temp.preLoadCount);
-
             }
         }
 

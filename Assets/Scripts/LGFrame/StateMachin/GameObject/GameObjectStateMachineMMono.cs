@@ -23,10 +23,9 @@ public class GameObjectStateMachineMMono : MonoBehaviour
 
     public GameObjectMState TryGetState(string key)
     {
-        MState < GameObject >  temp;
+        MState<GameObject>  temp;
         var isGet = this.StateMachine.Map.TryGetValue(key, out temp);
-        if (isGet)
-            return temp as GameObjectMState;
+        if (isGet) return temp as GameObjectMState;
 
         return null; 
     }
@@ -59,22 +58,12 @@ public class GameObjectStateMachineMMono : MonoBehaviour
     #endregion UnityEvent
 
     #region changeState
-    public virtual void ChangeState(string state)
-    {
-        this.stateMachine.ChangeState(state);
-    }
-
-    public virtual void ChangeState(string state , bool isSame)
+    public virtual void ChangeState(string state , bool isSame = false)
     {
         this.stateMachine.ChangeState(state,isSame);
     }
 
-    public virtual void ChangeState(MState<GameObject> state)
-    {
-        this.ChangeState(state, true);
-    }
-
-    public virtual void ChangeState(MState<GameObject> state,bool isSame)
+    public virtual void ChangeState(MState<GameObject> state,bool isSame = false)
     {
         this.stateMachine.ChangeState(state,isSame);
     }
