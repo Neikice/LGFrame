@@ -16,18 +16,11 @@ namespace LGFrame.BehaviorTree.Decorate
         BTResult returnState;
 
         #region 构造函数
-        public Timer_DelayNode(BTNode node, float delayTime) : base(node)
+        public Timer_DelayNode(ITickNode node, float delayTime) : base(node)
         {
             this.name = "Decorator_Timer";
             this.DelayTime = delayTime;
             this.returnState = BTResult.Success;
-        }
-
-        public Timer_DelayNode(BTNode node, float delayTime,BTResult returnstate) : base(node)
-        {
-            this.name = "Decorator_Timer";
-            this.DelayTime = delayTime;
-            this.returnState = returnstate;
         }
 
         #endregion 构造函数
@@ -37,7 +30,7 @@ namespace LGFrame.BehaviorTree.Decorate
             if (this.node.CheckEnd()) return this.State;
 
             this.State = BTResult.Running;
-            Observable.Timer(TimeSpan.FromSeconds(DelayTime)).Take(1)
+            Observable.Interval(TimeSpan.FromSeconds(DelayTime)).Take(1)
                 .Subscribe(_ =>
                 {
                     Debug.Log("等了秒 " + DelayTime);

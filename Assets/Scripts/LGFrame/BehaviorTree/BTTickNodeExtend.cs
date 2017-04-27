@@ -9,6 +9,11 @@ namespace LGFrame.BehaviorTree
 {
     public static class TickNodeExtend
     {
+        public static ITickNode End(this ITickNode parent)
+        {
+           return parent.RootNode; 
+        }
+
         public static ITickNode PrioritySelector(this ITickNode parent, params ITickNode[] nodes)
         {
             var tempnode = new BTPrioritySelector(parent);
@@ -19,7 +24,7 @@ namespace LGFrame.BehaviorTree
                     tempnode.AddChild(nodes[i]);
                 }
             }
-            return parent;
+            return tempnode;
         }
 
         public static ITickNode Sequence(this ITickNode parent, params ITickNode[] nodes)
@@ -32,7 +37,7 @@ namespace LGFrame.BehaviorTree
                     tempnode.AddChild(nodes[i]);
                 }
             }
-            return parent;
+            return tempnode;
         }
 
         public static ITickNode Parallel(this ITickNode parent, params ITickNode[] nodes)
@@ -45,7 +50,7 @@ namespace LGFrame.BehaviorTree
                     tempnode.AddChild(nodes[i]);
                 }
             }
-            return parent;
+            return tempnode;
         }
 
         public static ITickNode Condition(this ITickNode parent, params ITickNode[] nodes)
@@ -58,7 +63,13 @@ namespace LGFrame.BehaviorTree
                     tempnode.AddChild(nodes[i]);
                 }
             }
-            return parent;
+            return tempnode;
+        }
+
+        public static ITickNode Condition(this ITickNode parent,Func<bool> condition)
+        {
+            var tempnode = new BTCondition(parent, condition);
+            return tempnode;
         }
 
         public static ITickNode Action(this ITickNode parent, params ITickNode[] nodes)
@@ -71,20 +82,21 @@ namespace LGFrame.BehaviorTree
                     tempnode.AddChild(nodes[i]);
                 }
             }
-            return parent;
+            return tempnode;
         }
 
-        public static ITickNode Action(this ITickNode parent, params Action[] actions)
+        public static ITickNode Action(this ITickNode parent, Action action)
         {
-            var tempnode = new BTAction(parent);
-            if (actions.Length > 0)
-            {
-                for (int i = 0; i < actions.Length; i++)
-                {
-                    parent.AddChild(new BTAction(actions[i]));
-                }
-            }
-            return parent;
+            var tempnode = new BTAction(parent, action);
+            return tempnode;
         }
+
+        public static ITickNode Loop(this ITickNode Ticknode, int loopcount)
+        {
+            var decorator = new Decorate.Loop(Ticknode, loopcount);
+            return decorator;
+
+        }
+
     }
 }

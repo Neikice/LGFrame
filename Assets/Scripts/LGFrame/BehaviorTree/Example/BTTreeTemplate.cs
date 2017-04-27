@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
+using _ = LGFrame.BehaviorTree.BTNodes;
 
 namespace LGFrame.BehaviorTree
 {
@@ -12,12 +13,12 @@ namespace LGFrame.BehaviorTree
             root = new BTRoot(this);
 
             root
-                 .Sequence(
-                   BTNode.Condition(() => { Debug.Log("第一次Check"); return false; })
-                            .Action(() => Debug.Log("第一次Action")),
-                   BTNode.Condition(() => { Debug.Log("第二次Check"); return true; })
-                            .Action(() => Debug.Log("第二次Action")
-               ));
+                .PrioritySelector(
+                    _.Condition(() => { Debug.Log("第一次Check"); return false; })
+                            .Action(() => Debug.Log("超级玩家")).End(),
+                    _.Condition(() => { Debug.Log("第二次Check"); return true; })
+                            .Action(() => Debug.Log("第二次Action")).End()
+                        );
 
             //var priotick = new BTPrioritySelector();
             //var action3 = new BTAction();

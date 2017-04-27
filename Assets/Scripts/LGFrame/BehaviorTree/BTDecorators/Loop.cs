@@ -15,7 +15,7 @@ namespace LGFrame.BehaviorTree.Decorate
 
 
         #region 构造函数
-        public Loop(BTNode node):base(node)
+        public Loop(ITickNode node):base(node)
         {
             this.isLimited = false;
 
@@ -26,7 +26,25 @@ namespace LGFrame.BehaviorTree.Decorate
             this.name = "Decorator_Loop";
         }
 
-        public Loop(BTNode node,int count) : base(node)
+        public Loop(ITickNode node, int count) : this(node)
+        {
+            this.isLimited = true;
+
+            this.count = count;
+        }
+
+        public Loop()
+        {
+            this.isLimited = false;
+
+            this.count = 0;
+
+            this.number = 0;
+
+            this.name = "Decorator_Loop";
+        }
+
+        public Loop(int count)
         {
             this.isLimited = true;
 
@@ -40,7 +58,8 @@ namespace LGFrame.BehaviorTree.Decorate
 
         public override BTResult Tick()
         {
-            if (this.node.CheckEnd()) return this.State;
+            var node = this.node as BTNode;
+            if (node.CheckEnd()) return this.State;
 
             this.number++;
 

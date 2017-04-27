@@ -6,13 +6,15 @@ using System;
 
 namespace LGFrame.BehaviorTree.Decorate
 {
-    public abstract class BTDecorator : ITickNode
+    public abstract class BTDecorator : IDecoratorNode
     {
         protected string name;
 
-        protected BTNode node;
+        protected ITickNode node;
 
         public BTResult State { get { return this.node.State; } set { this.node.State = value; } }
+
+        public ITickNode RootNode { get { return this.node.RootNode; } }
 
         public ITickNode ParentNode
         {
@@ -22,13 +24,19 @@ namespace LGFrame.BehaviorTree.Decorate
 
         public List<ITickNode> ChildrenNotes { get { return this.node.ChildrenNotes; } }
 
-        public BTDecorator(BTNode node)
+        public BTDecorator(ITickNode node):this()
         {
-            this.name = "DefaultDecorator";
             this.node = node;
         }
 
+        public BTDecorator() { this.name = "DefaultDecorator"; }
+
         public abstract BTResult Tick();
+
+        public ITickNode Decorator(ITickNode node)
+        {
+            return this.node = node;
+        }
 
         public string TreeStruct(int layer)
         {
@@ -64,6 +72,13 @@ namespace LGFrame.BehaviorTree.Decorate
         {
             return this.node.Contain(list);
         }
+
+        public bool CheckEnd()
+        {
+            return this.node.CheckEnd();
+        }
+
+
     }
 
 }

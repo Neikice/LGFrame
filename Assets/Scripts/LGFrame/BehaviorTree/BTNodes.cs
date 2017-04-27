@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace LGFrame.BehaviorTree
 {
-    public abstract partial class BTNode : ITickNode
+    public  static class BTNodes
     {
         public static ITickNode PrioritySelector()
         {
@@ -31,6 +31,11 @@ namespace LGFrame.BehaviorTree
         public static ITickNode Action(Action action)
         {
             return new BTAction(action);
+        }
+
+        public static IDecoratorNode Loop()
+        {
+            return new Decorate.Loop();
         }
     }
 }

@@ -18,7 +18,7 @@ namespace LGFrame.BehaviorTree
             {
                 if (this.ParentNode == null) return this;
 
-                return this.ParentNode.ParentNode;
+                return this.ParentNode.RootNode;
             }
         }
 
@@ -63,7 +63,7 @@ namespace LGFrame.BehaviorTree
         /// 判断并返回state状态是不是Success或者Failure， 否则返回Ready
         /// </summary>
         /// <returns></returns>
-        public virtual bool CheckEnd()
+        public bool CheckEnd()
         {
             if (this.State == BTResult.Success || this.State == BTResult.Failure) return true;
 

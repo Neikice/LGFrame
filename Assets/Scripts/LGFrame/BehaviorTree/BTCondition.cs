@@ -17,6 +17,8 @@ namespace LGFrame.BehaviorTree
 
         public BTCondition(Func<bool> func) : this() { this.CheckAction = func; }
 
+        public BTCondition(ITickNode parent ,Func<bool> func) : this(parent) { this.CheckAction = func; }
+
         public override BTResult Tick()
         {
             if (this.CheckEnd()) return this.State;

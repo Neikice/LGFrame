@@ -12,6 +12,8 @@ namespace LGFrame.BehaviorTree
 
         public BTAction(Action action) : this() { this.Action = action; }
 
+        public BTAction(ITickNode parent , Action action) : this(parent) { this.Action = action; }
+
         public override BTResult Tick()
         {
             if (this.Action != null)
