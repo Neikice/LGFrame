@@ -12,7 +12,7 @@ namespace LGFrame.BehaviorTree
     {
         public BTSequence() : base() { this.name = "Sequence"; }
 
-        public BTSequence(BTNode parent) : base(parent) { this.name = "Sequence"; }
+        public BTSequence(ITickNode parent) : base(parent) { this.name = "Sequence"; }
 
         public override BTResult Tick()
         {

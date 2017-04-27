@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class GOStateMachineMonoSingle<T> : GameObjectStateMachineMMono where T: GOStateMachineMonoSingle<T>
+public class GOStateMachineMonoSingle<T> : GameObjectStateMachineMono where T: GOStateMachineMonoSingle<T>
 {
     private static T instance = null;
     private static object lockObject = new object();

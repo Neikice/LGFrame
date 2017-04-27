@@ -125,11 +125,6 @@ namespace LGFrame
             return false;
         }
 
-        public bool ChangeState(object _Object, MstateEventArgs args)
-        {
-            return ChangeState(args.StateName);
-        }
-
         public virtual void UpdateState()
         {
             CurrenState.Execute();

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using LGFrame;
 
-public class GameObjectStateMachineMMono : MonoBehaviour
+public class GameObjectStateMachineMono : MonoBehaviour
 {
     public bool isSetDefaultState = false;
 

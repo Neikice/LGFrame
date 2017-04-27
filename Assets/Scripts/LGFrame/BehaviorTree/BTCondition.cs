@@ -13,15 +13,18 @@ namespace LGFrame.BehaviorTree
 
         public BTCondition() : base() { this.name = "Condition"; }
 
-        public BTCondition(BTNode parent) : base(parent) { this.name = "Condition"; }
+        public BTCondition(ITickNode parent) : base(parent) { this.name = "Condition"; }
+
+        public BTCondition(Func<bool> func) : this() { this.CheckAction = func; }
 
         public override BTResult Tick()
         {
             if (this.CheckEnd()) return this.State;
 
-            this.isSuccessful = this.CheckAction.Invoke();
+            if (this.CheckAction != null)
+                this.isSuccessful = this.CheckAction.Invoke();
 
-            if(this.isSuccessful)
+            if (this.isSuccessful)
             {
                 for (int i = 0; i < ChildrenNotes.Count; i++)
                 {

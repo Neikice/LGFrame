@@ -6,13 +6,13 @@ using UnityEngine;
 
 namespace LGFrame.BehaviorTree
 {
-    public abstract class BTNode : TickNode
+    public  abstract partial class BTNode : ITickNode
     {
         public string name;
 
-        public TickNode ParentNode { get; set; }
+        public ITickNode ParentNode { get; set; }
 
-        public virtual TickNode RootNode
+        public virtual ITickNode RootNode
         {
             get
             {
@@ -22,9 +22,9 @@ namespace LGFrame.BehaviorTree
             }
         }
 
-        public List<TickNode> childrenNotes;
+        public List<ITickNode> childrenNotes;
 
-        public List<TickNode> ChildrenNotes { get { return this.childrenNotes; } }
+        public List<ITickNode> ChildrenNotes { get { return this.childrenNotes; } }
 
         protected BTResult state;
 
@@ -35,10 +35,10 @@ namespace LGFrame.BehaviorTree
         {
             this.name = "Root";
             this.State = BTResult.Ready;
-            this.childrenNotes = new List<TickNode>();
+            this.childrenNotes = new List<ITickNode>();
         }
 
-        public BTNode(BTNode parrent) : base()
+        public BTNode(ITickNode parrent) : base()
         {
             this.ParentNode = parrent;
             parrent.AddChild(this);
@@ -51,8 +51,11 @@ namespace LGFrame.BehaviorTree
         {
             this.State = BTResult.Ready;
 
-            for (int i = 0; i < this.ChildrenNotes.Count; i++)
-                this.ChildrenNotes[i].Clear();
+            if (this.ChildrenNotes != null)
+            {
+                for (int i = 0; i < this.ChildrenNotes.Count; i++)
+                    this.ChildrenNotes[i].Clear();
+            }
         }
 
 
@@ -68,10 +71,21 @@ namespace LGFrame.BehaviorTree
         }
 
 
-        public void AddChild(TickNode node)
+        public void AddChild(ITickNode node)
         {
+            if (this.ChildrenNotes == null) this.childrenNotes = new List<ITickNode>();
+
             this.ChildrenNotes.Add(node);
             node.ParentNode = this;
+        }
+
+        public ITickNode Contain(params ITickNode[] nodes)
+        {
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                this.AddChild(nodes[i]);
+            }
+            return this;
         }
 
         public virtual string TreeStruct(int layer)

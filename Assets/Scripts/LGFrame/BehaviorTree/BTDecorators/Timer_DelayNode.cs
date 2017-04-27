@@ -47,8 +47,6 @@ namespace LGFrame.BehaviorTree.Decorate
             return this.returnState;
         }
 
-
-
         public override void Clear()
         {
             base.Clear();

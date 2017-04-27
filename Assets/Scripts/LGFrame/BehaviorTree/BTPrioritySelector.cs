@@ -12,7 +12,7 @@ namespace LGFrame.BehaviorTree
     {
         public BTPrioritySelector() : base() { this.name = "PrioritySelector"; }
 
-        public BTPrioritySelector(BTNode parent) : base(parent) { this.name = "PrioritySelector"; }
+        public BTPrioritySelector(ITickNode parent) : base(parent) { this.name = "PrioritySelector"; }
 
 
         public override BTResult Tick()

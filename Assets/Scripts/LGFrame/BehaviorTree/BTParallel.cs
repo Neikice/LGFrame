@@ -12,7 +12,7 @@ namespace LGFrame.BehaviorTree
     {
         public BTParallel() : base() { this.name = "PrioritySelector"; }
 
-        public BTParallel(BTNode parent) : base(parent) { this.name = "PrioritySelector"; }
+        public BTParallel(ITickNode parent) : base(parent) { this.name = "PrioritySelector"; }
 
 
         public override BTResult Tick()

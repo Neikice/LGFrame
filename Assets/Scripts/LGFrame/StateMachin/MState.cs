@@ -14,8 +14,11 @@ namespace LGFrame
             private set { name = value; }
         }
 
+        protected T controller;
+        public T Controller { get { return this.Controller; } }
+
         protected StateMachine<T> stateMachine;
-        public StateMachine<T> StateMachine;
+        public StateMachine<T> StateMachine { get { return this.stateMachine; } }
 
         //构造函数
         public MState() { name = initialClassName(); }
@@ -114,15 +117,6 @@ namespace LGFrame
 
     }
 
-    public class MstateEventArgs : EventArgs
-    {
-        string _stateName;
-        public string StateName
-        {
-            get { return _stateName; }
-            set { _stateName = value; }
-        }
-    }
     public class nullMState<T> : MState<T>
     {
         public nullMState() { name = "null"; }

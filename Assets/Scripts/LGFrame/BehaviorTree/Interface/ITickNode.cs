@@ -3,10 +3,12 @@ using System.Collections.Generic;
 
 namespace LGFrame.BehaviorTree
 {
-    public interface TickNode
+    public interface ITickNode
     {
-        TickNode ParentNode { get; set; }
-        List<TickNode> ChildrenNotes { get; }
+        ITickNode ParentNode { get; set; }
+        List<ITickNode> ChildrenNotes { get; }
+        void AddChild(ITickNode node);
+        ITickNode Contain(params ITickNode[] list);
         BTResult State { get; }
         BTResult Tick();
         void Clear();

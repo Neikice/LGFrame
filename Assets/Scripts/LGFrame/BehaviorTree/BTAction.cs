@@ -8,11 +8,14 @@ namespace LGFrame.BehaviorTree
 
         public BTAction() : base() { this.name = "Action"; }
 
-        public BTAction(BTNode parent) : base(parent) { this.name = "Action"; }
+        public BTAction(ITickNode parent) : base(parent) { this.name = "Action"; }
+
+        public BTAction(Action action) : this() { this.Action = action; }
 
         public override BTResult Tick()
         {
-            this.Action.Invoke();
+            if (this.Action != null)
+                this.Action.Invoke();
 
             return this.State = BTResult.Success;
         }

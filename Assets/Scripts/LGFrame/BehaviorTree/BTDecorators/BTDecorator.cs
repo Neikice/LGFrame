@@ -6,7 +6,7 @@ using System;
 
 namespace LGFrame.BehaviorTree.Decorate
 {
-    public abstract class BTDecorator : TickNode
+    public abstract class BTDecorator : ITickNode
     {
         protected string name;
 
@@ -14,13 +14,13 @@ namespace LGFrame.BehaviorTree.Decorate
 
         public BTResult State { get { return this.node.State; } set { this.node.State = value; } }
 
-        public TickNode ParentNode
+        public ITickNode ParentNode
         {
             get { return this.node.ParentNode; }
             set { this.node.ParentNode = value; }
         }
 
-        public List<TickNode> ChildrenNotes { get { return this.node.ChildrenNotes; } }
+        public List<ITickNode> ChildrenNotes { get { return this.node.ChildrenNotes; } }
 
         public BTDecorator(BTNode node)
         {
@@ -53,6 +53,16 @@ namespace LGFrame.BehaviorTree.Decorate
         public virtual void Clear()
         {
             this.node.Clear();
+        }
+
+        public void AddChild(ITickNode node)
+        {
+            this.node.AddChild(node);
+        }
+
+        public ITickNode Contain(params ITickNode[] list)
+        {
+            return this.node.Contain(list);
         }
     }
 
