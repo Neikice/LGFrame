@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace LGFrame.BehaviorTree
 {
-    public  abstract partial class BTNode : ITickNode
+    public abstract partial class BTNode : ITickNode
     {
         public string name;
 
@@ -41,7 +41,7 @@ namespace LGFrame.BehaviorTree
         public BTNode(ITickNode parrent) : base()
         {
             this.ParentNode = parrent;
-            parrent.AddChild(this);
+            parrent.AddChildNode(this);
         }
         #endregion 构造函数
 
@@ -71,7 +71,7 @@ namespace LGFrame.BehaviorTree
         }
 
 
-        public void AddChild(ITickNode node)
+        public void AddChildNode(ITickNode node)
         {
             if (this.ChildrenNotes == null) this.childrenNotes = new List<ITickNode>();
 
@@ -79,11 +79,19 @@ namespace LGFrame.BehaviorTree
             node.ParentNode = this;
         }
 
+        public void RemoveNode(ITickNode node)
+        {
+            if (this.ChildrenNotes == null) return;
+
+            if (this.ChildrenNotes.Contains(node))
+                this.ChildrenNotes.Remove(node);
+        }
+
         public ITickNode Contain(params ITickNode[] nodes)
         {
             for (int i = 0; i < nodes.Length; i++)
             {
-                this.AddChild(nodes[i]);
+                this.AddChildNode(nodes[i]);
             }
             return this;
         }

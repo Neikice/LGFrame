@@ -13,36 +13,36 @@ namespace LGFrame.BehaviorTree.Decorate
     {
         public float DelayTime;
 
-        BTResult returnState;
-
         #region 构造函数
         public Timer_DelayNode(ITickNode node, float delayTime) : base(node)
         {
             this.name = "Decorator_Timer";
             this.DelayTime = delayTime;
-            this.returnState = BTResult.Success;
         }
 
         #endregion 构造函数
 
         public override BTResult Tick()
         {
-            if (this.node.CheckEnd()) return this.State;
+            if (this.State == BTResult.Running) return this.State;
 
-            this.State = BTResult.Running;
-            Observable.Interval(TimeSpan.FromSeconds(DelayTime)).Take(1)
-                .Subscribe(_ =>
-                {
-                    Debug.Log("等了秒 " + DelayTime);
-                    this.node.Tick();
-                });
+            if (this.node.State == BTResult.Running) return this.State = BTResult.Running;
 
-            return this.returnState;
-        }
+            if (this.State == BTResult.Ready)
+            {
+                this.State = BTResult.Running;
+                Observable.Interval(TimeSpan.FromSeconds(DelayTime)).Take(1)
+                    .Subscribe(_ =>
+                    {
+                        Debug.Log("等了秒 " + DelayTime);
+                        this.node.Tick();
+                        this.State = BTResult.Success;
 
-        public override void Clear()
-        {
-            base.Clear();
+                        Observable.NextFrame().Subscribe(x =>{ this.State = BTResult.Ready; });
+                    });
+            }
+
+            return this.State;
         }
     }
 }

@@ -58,23 +58,20 @@ namespace LGFrame.BehaviorTree.Decorate
 
         public override BTResult Tick()
         {
-            var node = this.node as BTNode;
-            if (node.CheckEnd()) return this.State;
+            if (this.node.State == BTResult.Running) return this.State = BTResult.Running;
+
+            if (this.number >= this.count)
+                return this.State = BTResult.Success;
 
             this.number++;
 
+            Debug.LogFormat("count = {1} || number = {0} ", this.number, this.count);
+
             this.node.Tick();
 
-            if (this.number > this.count)
-                return this.State ;
 
-            return this.State = BTResult.Running;
+            return this.State = BTResult.Ready;
         }
 
-        public override void Clear()
-        {
-            this.number = 0;
-            base.Clear();
-        }
     }
 }

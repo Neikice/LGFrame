@@ -13,9 +13,9 @@ namespace LGFrame.BehaviorTree
             root = new BTRoot(this);
 
             root
-                .PrioritySelector(
-                    _.Condition(() => { Debug.Log("第一次Check"); return false; })
-                            .Action(() => Debug.Log("超级玩家")).End(),
+                .Parallel(
+                    _.Condition(() => { Debug.Log("第一次Check"); return true; })
+                            .Action(() => Debug.Log("超级玩家")).Time_Delay(2).Loop(10).End(),
                     _.Condition(() => { Debug.Log("第二次Check"); return true; })
                             .Action(() => Debug.Log("第二次Action")).End()
                         );
