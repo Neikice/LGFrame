@@ -20,6 +20,15 @@ namespace LGFrame.BehaviorTree
             }
         }
 
+        public static void ReplaceInParent(ITickNode origin,ITickNode target)
+        {
+            if (origin.ParentNode != null)
+            {
+                var index = origin.ParentNode.ChildrenNotes.IndexOf(origin);
+                origin.ParentNode.ChildrenNotes[index] = target ;
+            }
+        }
+
         public static ITickNode End(this ITickNode parent)
         {
             return parent.RootNode;
@@ -75,22 +84,15 @@ namespace LGFrame.BehaviorTree
         public static ITickNode Loop(this ITickNode Ticknode, int loopcount)
         {
             var tempnode = new Decorate.Loop(Ticknode, loopcount);
-            if (Ticknode.ParentNode != null)
-            {
-                Ticknode.ParentNode.RemoveNode(Ticknode);
-                Ticknode.ParentNode.AddChildNode(tempnode);
-            }
+
+            ReplaceInParent(Ticknode, tempnode);
             return tempnode;
         }
 
         public static ITickNode Time_Delay(this ITickNode Ticknode, float delayTime)
         {
             var tempnode = new Decorate.Timer_DelayNode(Ticknode, delayTime);
-            if (Ticknode.ParentNode != null)
-            {
-                Ticknode.ParentNode.RemoveNode(Ticknode);
-                Ticknode.ParentNode.AddChildNode(tempnode);
-            }
+            ReplaceInParent(Ticknode, tempnode);
             return tempnode;
         }
 
